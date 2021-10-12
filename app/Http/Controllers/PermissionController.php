@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\tbl_permission;
 use App\Models\tbl_profile; 
 use App\Models\tbl_menu;  
+use App\Models\User; 
 use Illuminate\Support\Facades\Auth; 
 use Validator;
 
@@ -24,7 +25,8 @@ class PermissionController extends Controller
 
        $validator = Validator::make($request->all(), [ 
             'menu_id' => 'required', 
-             'profile_id' => 'required', 
+             'profile_id' => 'required',
+             'user_id' => 'required',  
              'view_flag' => 'required', 
              'add_flag' => 'required', 
               'edit_flag' => 'required', 
@@ -44,12 +46,17 @@ class PermissionController extends Controller
           {
                 return response()->json(['error'=>'profile_id is not found.Enter Valid profile_id'], 404); 
           }
+          if (!User::where('id', $request->user_id)->exists()) 
+          {
+                return response()->json(['error'=>'user_id is not found.Enter Valid user_id'], 404); 
+          }
 
 
 
 	    $tbl_permission = new tbl_permission;
 	    $tbl_permission->menu_id = $request->menu_id;
 	    $tbl_permission->profile_id = $request->profile_id;
+	    $tbl_permission->user_id = $request->user_id;
 	    $tbl_permission->view_flag = $request->view_flag;
 	    $tbl_permission->add_flag = $request->add_flag;
 	    $tbl_permission->edit_flag = $request->edit_flag;
@@ -80,9 +87,9 @@ class PermissionController extends Controller
          {
               return response()->json(['error'=>'Unauthorised'], 401);
          } 
-		  if (tbl_permission::where('id', $id)->exists()) 
+		  if (tbl_permission::where('user_id', $id)->exists()) 
 		  {
-		  	  $tbl_permission = tbl_permission::find($id); 
+		  	  $tbl_permission = tbl_permission::where('user_id', $id)->get()->first(); 
               return response()->json(['success' => $tbl_permission], $this-> successStatus); 
 		     
 		  } 
@@ -107,6 +114,7 @@ class PermissionController extends Controller
                $validator = Validator::make($request->all(), [ 
 		            'menu_id' => 'required', 
 		             'profile_id' => 'required', 
+		             'user_id' => 'required',  
 		             'view_flag' => 'required', 
 		             'add_flag' => 'required', 
 		              'edit_flag' => 'required', 
@@ -118,9 +126,23 @@ class PermissionController extends Controller
 		            return response()->json(['error'=>$validator->errors()], 401);            
 		        }
 
+		        if (!tbl_menu::where('id', $request->menu_id)->exists()) 
+		          {
+		                return response()->json(['error'=>'menu_id is not found.Enter Valid menu_id'], 404); 
+		          }
+		         if (!tbl_profile::where('id', $request->profile_id)->exists()) 
+		          {
+		                return response()->json(['error'=>'profile_id is not found.Enter Valid profile_id'], 404); 
+		          }
+		          if (!User::where('id', $request->user_id)->exists()) 
+		          {
+		                return response()->json(['error'=>'user_id is not found.Enter Valid user_id'], 404); 
+		          }
+
 		        $tbl_permission = tbl_permission::find($id);
 		        $tbl_permission->menu_id = $request->menu_id;
 			    $tbl_permission->profile_id = $request->profile_id;
+			    $tbl_permission->user_id = $request->user_id;
 			    $tbl_permission->view_flag = $request->view_flag;
 			    $tbl_permission->add_flag = $request->add_flag;
 			    $tbl_permission->edit_flag = $request->edit_flag;
@@ -146,7 +168,7 @@ class PermissionController extends Controller
          } 
     	if (tbl_permission::where('id', $id)->exists())
 		 {
-		        $tbl_permission = tbl_permission::find($id);
+		        $tbl_permission = tbl_permission::where('user_id', $id);
 		        $tbl_permission->delete();
 
 

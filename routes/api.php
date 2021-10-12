@@ -31,6 +31,9 @@ Route::group(['middleware' => 'auth:api'], function(){
 	Route::get('user/{id}', 'UserController@getUser');
 	Route::put('user_update/{id}', 'UserController@updateUser');
 	Route::delete('user_delete/{id}','UserController@deleteUser');
+	Route::get('users/architect', 'UserController@getUser_Architect');
+	Route::get('users/pmc', 'UserController@getUser_PMC');
+	Route::get('users/client', 'UserController@getUser_Client');
 
 
 	// Table Profile

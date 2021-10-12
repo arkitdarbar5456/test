@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\tbl_project; 
 use App\Models\tbl_profile; 
+use App\Models\User; 
 use Illuminate\Support\Facades\Auth; 
 use Validator;
 
@@ -34,20 +35,47 @@ class ProjectController extends Controller
 	            return response()->json(['error'=>$validator->errors()], 401);            
 	        }
 
-	        if (!tbl_profile::where('id', $request->architect_id)->exists()) 
-	          {
-	                return response()->json(['error'=>'architect_id is not found.Enter Valid architect_id'], 404); 
-	          }
-	        
-	        if (!tbl_profile::where('id', $request->pmc_id)->exists()) 
-	          {
-	                return response()->json(['error'=>'pmc_id is not found.Enter Valid pmc_id'], 404); 
-	          }
+	        if (User::where('id', $request->architect_id)->exists()) 
+	         {
+	             $user = User::where('id', $request->architect_id)->get()->first(); 
+                 if(!($user->type_id==2))
+                  {
+                         return response()->json(['error'=>'architect_id is not found.Enter Valid architect_id'], 404); 
+                  }
+	         }
+	        else
+	        {
+	        	return response()->json(['error'=>'architect_id is not found.Enter Valid architect_id'], 404); 
+	        }
 
-	         if (!tbl_profile::where('id', $request->client_id)->exists()) 
-	          {
-	                return response()->json(['error'=>'client_id is not found.Enter Valid client_id'], 404); 
-	          }  
+	        
+	        if (!User::where('id', $request->pmc_id)->exists()) 
+	        {
+	             $user = User::where('id', $request->pmc_id)->get()->first(); 
+                 if(!($user->type_id==3))
+                  {
+                         return response()->json(['error'=>'pmc_id is not found.Enter Valid pmc_id'], 404); 
+                  }
+	        }
+	        else
+	        {
+	        	 return response()->json(['error'=>'pmc_id is not found.Enter Valid pmc_id'], 404); 
+	        }
+	         
+
+
+	         if (!User::where('id', $request->client_id)->exists()) 
+	         {
+	             $user = User::where('id', $request->client_id)->get()->first(); 
+                if(!($user->type_id==4))
+                  {
+                         return response()->json(['error'=>'client_id is not found.Enter Valid client_id'], 404); 
+                  }
+	         }
+	         else
+	         {
+	         	return response()->json(['error'=>'client_id is not found.Enter Valid client_id'], 404); 
+	         }  
 
 
 		    $tbl_project = new tbl_project;
@@ -119,20 +147,47 @@ class ProjectController extends Controller
 			            return response()->json(['error'=>$validator->errors()], 401);            
 			        }
 
-					 if (!tbl_profile::where('id', $request->architect_id)->exists()) 
-			          {
-			                return response()->json(['error'=>'architect_id is not found.Enter Valid architect_id'], 404); 
-			          }
-			        
-			        if (!tbl_profile::where('id', $request->pmc_id)->exists()) 
-			          {
-			                return response()->json(['error'=>'pmc_id is not found.Enter Valid pmc_id'], 404); 
-			          }
+					if (User::where('id', $request->architect_id)->exists()) 
+			         {
+			             $user = User::where('id', $request->architect_id)->get()->first(); 
+		                 if(!($user->type_id==2))
+		                  {
+		                      return response()->json(['error'=>'architect_id is not found.Enter Valid architect_id'], 404); 
+		                  }
+			         }
+			        else
+			        {
+			        	return response()->json(['error'=>'architect_id is not found.Enter Valid architect_id'], 404); 
+			        }
 
-			         if (!tbl_profile::where('id', $request->client_id)->exists()) 
-			          {
-			                return response()->json(['error'=>'client_id is not found.Enter Valid client_id'], 404); 
-			          }  
+			        
+			        if (!User::where('id', $request->pmc_id)->exists()) 
+			        {
+			             $user = User::where('id', $request->pmc_id)->get()->first(); 
+		                 if(!($user->type_id==3))
+		                  {
+		                         return response()->json(['error'=>'pmc_id is not found.Enter Valid pmc_id'], 404); 
+		                  }
+			        }
+			        else
+			        {
+			        	 return response()->json(['error'=>'pmc_id is not found.Enter Valid pmc_id'], 404); 
+			        }
+			         
+
+
+			         if (!User::where('id', $request->client_id)->exists()) 
+			         {
+			             $user = User::where('id', $request->client_id)->get()->first(); 
+		                if(!($user->type_id==4))
+		                  {
+		                         return response()->json(['error'=>'client_id is not found.Enter Valid client_id'], 404); 
+		                  }
+			         }
+			         else
+			         {
+			         	return response()->json(['error'=>'client_id is not found.Enter Valid client_id'], 404); 
+			         }  
 
 			        $tbl_project = tbl_project::find($id);
 			        $tbl_project->name = $request->name;

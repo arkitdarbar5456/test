@@ -18,8 +18,8 @@ class UserController extends Controller
     { 
 
         // Get user of access token
-        $user_auth  =  Auth::user();
-        $token = $request->bearerToken(); 
+        // $user_auth  =  Auth::user();
+        // $token = $request->bearerToken(); 
        // if ( !empty ( $token ) ) {
        //          return ' token not empty';
        //   } 
@@ -28,13 +28,25 @@ class UserController extends Controller
        //      return 'token empty';
        //   }
 
-         if (!$user_auth) {
-                return ' authorised';
-         } 
-         else
-         {
-            return 'Unauthorised';
-         }
+         // if (!$user_auth) {
+         //        return ' authorised';
+         // } 
+         // else
+         // {
+         //    return 'Unauthorised';
+         // }
+        if (User::where('id', 1)->exists()) 
+            {
+                  $user = User::where('id', 6)->get()->first();                             
+                  if(!($user->type_id==2))
+                  {
+                        return response()->json(['error'=>'architect_id is not found.Enter Valid architect_id'], 404); 
+                  }
+            }
+            else
+            {
+               return response()->json(['error'=>'architect_id is not found.Enter Valid architect_id'], 404); 
+            }
 
     }
 
@@ -198,4 +210,95 @@ class UserController extends Controller
 
         	
     }
+
+    public function getUser_Architect() {
+      // logic to get a student record goes here
+        $user_auth  =  Auth::user();
+        if ($user_auth) 
+         {    
+             $id = 2;
+               if (User::where('type_id', $id)->exists()) 
+              {
+                  
+
+                  $tbl_user = User::where('type_id', $id)->get(); 
+                  return response()->json(['success' => $tbl_user], $this-> successStatus); 
+                 
+              } 
+              else 
+              {
+                   return response()->json(["error" => "User not found"], 404);
+                    
+              }
+         } 
+         else
+         {
+            return response()->json(['error'=>'Unauthorised'], 401);
+         }
+              
+            
+    }
+
+
+    public function getUser_PMC() {
+      // logic to get a student record goes here
+        $user_auth  =  Auth::user();
+        if ($user_auth) 
+         {    
+             $id = 3;
+               if (User::where('type_id', $id)->exists()) 
+              {
+                  
+
+                  $tbl_user = User::where('type_id', $id)->get(); 
+                  return response()->json(['success' => $tbl_user], $this-> successStatus); 
+                 
+              } 
+              else 
+              {
+                   return response()->json(["error" => "User not found"], 404);
+                    
+              }
+         } 
+         else
+         {
+            return response()->json(['error'=>'Unauthorised'], 401);
+         }
+              
+              
+            
+    }
+
+    public function getUser_Client() {
+      // logic to get a student record goes here
+         $user_auth  =  Auth::user();
+        if ($user_auth) 
+         {    
+             $id = 4;
+               if (User::where('type_id', $id)->exists()) 
+              {
+                  
+
+                  $tbl_user = User::where('type_id', $id)->get(); 
+                  return response()->json(['success' => $tbl_user], $this-> successStatus); 
+                 
+              } 
+              else 
+              {
+                   return response()->json(["error" => "User not found"], 404);
+                    
+              }
+         } 
+         else
+         {
+            return response()->json(['error'=>'Unauthorised'], 401);
+         }
+              
+              
+            
+    }
+
+
+
+
 }
